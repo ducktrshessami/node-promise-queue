@@ -1,2 +1,2 @@
-# ts-lib-template
-Typescript library template
+# node-promise-queue
+Break a word into syllables
