@@ -21,4 +21,9 @@ export class PromiseQueue<Groups extends {} = {}> {
         const group: PromiseQueueGroup<any[]> = this.ensureGroup(groupName);
         group.add(promise);
     }
+
+    public clear(): asserts this is PromiseQueue<{}> {
+        this.groups.forEach(group => group.clear());
+        this.groups.clear();
+    }
 }
