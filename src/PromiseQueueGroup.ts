@@ -1,20 +1,20 @@
 import { PromiseOrLazy } from "./util";
 
-export class PromiseQueueGroup<GroupTypes extends any[] = []> {
-    private readonly promises: GroupTypes;
-    private _all: Promise<GroupTypes> | null;
+export class PromiseQueueGroup {
+    public readonly promises: Promise<any>[];
+    private _all: Promise<any[]> | null;
 
     constructor() {
-        this.promises = [] as any as GroupTypes;
+        this.promises = [];
         this._all = null;
     }
 
-    public get all(): Promise<GroupTypes> {
+    public get all(): Promise<any[]> {
         this._all ??= Promise.all(this.promises);
         return this._all;
     }
 
-    protected push<T>(promise: Promise<T>): asserts this is PromiseQueueGroup<[...GroupTypes, T]> {
+    protected push(promise: Promise<any>): void {
         this.promises.push(promise);
         this._all = null;
     }
@@ -23,12 +23,12 @@ export class PromiseQueueGroup<GroupTypes extends any[] = []> {
         return typeof promise === "function" ? this.all.then(promise) : promise;
     }
 
-    public add<T>(promise: PromiseOrLazy<T>): asserts this is PromiseQueueGroup<[...GroupTypes, T]> {
+    public add(promise: PromiseOrLazy<any>): void {
         const p = this.resolveLazy(promise);
         this.push(p);
     }
 
-    public clear(): asserts this is PromiseQueueGroup<[]> {
+    public clear(): void {
         this.promises.length = 0;
         this._all = null;
     }

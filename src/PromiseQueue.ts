@@ -1,30 +1,28 @@
 import { PromiseQueueGroup } from "./PromiseQueueGroup";
-import { GroupType, MergeGroup, PromiseOrLazy } from "./util";
+import { PromiseOrLazy } from "./util";
 
-export class PromiseQueue<GroupMap extends {} = {}, AllTypes extends any[] = []> extends PromiseQueueGroup<AllTypes> {
+export class PromiseQueue extends PromiseQueueGroup {
     public static readonly DefaultGroup = "default";
 
     private readonly groups: Map<string, PromiseQueueGroup> = new Map();
 
-    private ensureGroup<Group extends string>(name: Group): PromiseQueueGroup<GroupType<GroupMap, Group>> {
+    private ensureGroup(name: string): PromiseQueueGroup {
         let group = this.groups.get(name);
         if (!group) {
             group = new PromiseQueueGroup();
             this.groups.set(name, group);
         }
-        return group as PromiseQueueGroup<GroupType<GroupMap, Group>>;
+        return group;
     }
 
-    public add<T>(promise: PromiseOrLazy<T>): asserts this is PromiseQueue<MergeGroup<GroupMap, typeof PromiseQueue.DefaultGroup, T>, [...AllTypes, T]>;
-    public add<T, Group extends string>(promise: PromiseOrLazy<T>, groupName: Group): asserts this is PromiseQueue<MergeGroup<GroupMap, Group, T>, [...AllTypes, T]>;
-    public add<T>(promise: PromiseOrLazy<T>, groupName: string = PromiseQueue.DefaultGroup): void {
-        const group: PromiseQueueGroup<any[]> = this.ensureGroup(groupName);
+    public add(promise: PromiseOrLazy<any>, groupName: string = PromiseQueue.DefaultGroup): void {
+        const group = this.ensureGroup(groupName);
         const p = group.resolveLazy(promise);
         group.add(p);
         this.push(p);
     }
 
-    public clear(): asserts this is PromiseQueue<{}, []> {
+    public clear(): void {
         this.groups.forEach(group => group.clear());
         this.groups.clear();
         super.clear();
