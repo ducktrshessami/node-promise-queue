@@ -1,3 +1,3 @@
 export * from "./PromiseQueue";
-export * from "./PromiseQueueGroup";
+export * from "./PromiseQueueMap";
 export * from "./util";

@@ -1,30 +1,35 @@
-import { PromiseQueueGroup } from "./PromiseQueueGroup";
 import { PromiseOrLazy } from "./util";
 
-export class PromiseQueue extends PromiseQueueGroup {
-    public static readonly DefaultGroup = "default";
+export class PromiseQueue {
+    public readonly promises: Promise<any>[];
+    private _all: Promise<any[]> | null;
 
-    private readonly groups: Map<string, PromiseQueueGroup> = new Map();
-
-    private ensureGroup(name: string): PromiseQueueGroup {
-        let group = this.groups.get(name);
-        if (!group) {
-            group = new PromiseQueueGroup();
-            this.groups.set(name, group);
-        }
-        return group;
+    constructor() {
+        this.promises = [];
+        this._all = null;
     }
 
-    public add(promise: PromiseOrLazy<any>, groupName: string = PromiseQueue.DefaultGroup): void {
-        const group = this.ensureGroup(groupName);
-        const p = group.resolveLazy(promise);
-        group.add(p);
+    public get all(): Promise<any[]> {
+        this._all ??= Promise.all(this.promises);
+        return this._all;
+    }
+
+    protected push(promise: Promise<any>): void {
+        this.promises.push(promise);
+        this._all = null;
+    }
+
+    public resolveLazy<T>(promise: PromiseOrLazy<T>): Promise<T> {
+        return typeof promise === "function" ? this.all.then(promise) : promise;
+    }
+
+    public add(promise: PromiseOrLazy<any>): void {
+        const p = this.resolveLazy(promise);
         this.push(p);
     }
 
     public clear(): void {
-        this.groups.forEach(group => group.clear());
-        this.groups.clear();
-        super.clear();
+        this.promises.length = 0;
+        this._all = null;
     }
 }
