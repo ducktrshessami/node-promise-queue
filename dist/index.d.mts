@@ -1,7 +1,7 @@
 type LazyPromise<T> = () => Promise<T>;
 type PromiseOrLazy<T> = Promise<T> | LazyPromise<T>;
 
-declare class PromiseQueueGroup {
+declare class PromiseQueue {
     readonly promises: Promise<any>[];
     private _all;
     constructor();
@@ -12,7 +12,7 @@ declare class PromiseQueueGroup {
     clear(): void;
 }
 
-declare class PromiseQueue extends PromiseQueueGroup {
+declare class PromiseQueueMap extends PromiseQueue {
     static readonly DefaultGroup = "default";
     private readonly groups;
     private ensureGroup;
@@ -20,4 +20,4 @@ declare class PromiseQueue extends PromiseQueueGroup {
     clear(): void;
 }
 
-export { type LazyPromise, type PromiseOrLazy, PromiseQueue, PromiseQueueGroup };
+export { type LazyPromise, type PromiseOrLazy, PromiseQueue, PromiseQueueMap };

@@ -1,5 +1,5 @@
-// src/PromiseQueueGroup.ts
-var PromiseQueueGroup = class {
+// src/PromiseQueue.ts
+var PromiseQueue = class {
   promises;
   _all;
   constructor() {
@@ -27,19 +27,19 @@ var PromiseQueueGroup = class {
   }
 };
 
-// src/PromiseQueue.ts
-var PromiseQueue = class _PromiseQueue extends PromiseQueueGroup {
+// src/PromiseQueueMap.ts
+var PromiseQueueMap = class _PromiseQueueMap extends PromiseQueue {
   static DefaultGroup = "default";
   groups = /* @__PURE__ */ new Map();
   ensureGroup(name) {
     let group = this.groups.get(name);
     if (!group) {
-      group = new PromiseQueueGroup();
+      group = new PromiseQueue();
       this.groups.set(name, group);
     }
     return group;
   }
-  add(promise, groupName = _PromiseQueue.DefaultGroup) {
+  add(promise, groupName = _PromiseQueueMap.DefaultGroup) {
     const group = this.ensureGroup(groupName);
     const p = group.resolveLazy(promise);
     group.add(p);
@@ -53,6 +53,6 @@ var PromiseQueue = class _PromiseQueue extends PromiseQueueGroup {
 };
 export {
   PromiseQueue,
-  PromiseQueueGroup
+  PromiseQueueMap
 };
 //# sourceMappingURL=index.mjs.map
