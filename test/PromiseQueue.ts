@@ -1,9 +1,9 @@
 import assert from "assert";
-import { PromiseQueueGroup } from "../";
+import { PromiseQueue } from "../";
 
 describe("PromiseQueueGroup", function () {
     it("should contain stored Promises", async function () {
-        const group: PromiseQueueGroup = new PromiseQueueGroup();
+        const group: PromiseQueue = new PromiseQueue();
         group.add(Promise.resolve(1));
         group.add(Promise.resolve(2));
         const results = await group.all;
