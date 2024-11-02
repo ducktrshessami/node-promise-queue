@@ -1,12 +1,12 @@
 import assert from "assert";
 import { PromiseQueue } from "../";
 
-describe("PromiseQueueGroup", function () {
+describe("PromiseQueue", function () {
     it("should contain stored Promises", async function () {
-        const group: PromiseQueue = new PromiseQueue();
-        group.add(Promise.resolve(1));
-        group.add(Promise.resolve(2));
-        const results = await group.all;
+        const queue: PromiseQueue = new PromiseQueue();
+        queue.add(Promise.resolve(1));
+        queue.add(Promise.resolve(2));
+        const results = await queue.all;
         assert.deepStrictEqual(results, [1, 2]);
     });
 });
