@@ -8,7 +8,9 @@
   "author": "ducktrshessami",
   "license": "MIT",
   "scripts": {
-    "build": "tsup",
+    "build:main": "tsup",
+    "build:test": "tsc --project tsconfig.test.json",
+    "build": "yarn build:main && yarn build:test",
     "pretest": "yarn build",
     "test": "mocha"
   },
