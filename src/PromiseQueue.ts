@@ -1,13 +1,8 @@
 import { PromiseOrLazy } from "./util";
 
 export class PromiseQueue {
-    public readonly promises: Promise<any>[];
-    private _all: Promise<any[]> | null;
-
-    constructor() {
-        this.promises = [];
-        this._all = null;
-    }
+    public readonly promises: Promise<any>[] = [];
+    private _all: Promise<any[]> | null = null;
 
     public get all(): Promise<any[]> {
         this._all ??= Promise.all(this.promises);
