@@ -15,12 +15,18 @@ describe("PromiseQueue", function () {
         let resolve: () => void;
         queue.add(new Promise(res => resolve = () => {
             const t = Date.now();
-            setTimeout(() => res(t), 1);
+            setTimeout(() => res(t), 2);
+        }));
+        queue.add(() => new Promise(res => {
+            const t = Date.now();
+            setTimeout(() => res(t), 2);
         }));
         queue.add(() => Promise.resolve(Date.now()));
         resolve!();
         const results = await queue.all;
-        assert(results[0] < results[1]);
+        for (let i = 0; i < results.length - 1; i++) {
+            assert(results[i] < results[i + 1]);
+        }
     });
 
     it("should return all Promises on clear", async function () {
