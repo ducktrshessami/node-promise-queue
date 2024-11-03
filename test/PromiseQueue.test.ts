@@ -22,4 +22,12 @@ describe("PromiseQueue", function () {
         const results = await queue.all;
         assert(results[0] < results[1]);
     });
+
+    it("should return all Promises on clear", async function () {
+        const queue = new PromiseQueue();
+        queue.add(Promise.resolve(1));
+        queue.add(Promise.resolve(2));
+        const results = await queue.clear();
+        assert.deepStrictEqual(results, [1, 2]);
+    });
 });
