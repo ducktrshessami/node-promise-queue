@@ -22,9 +22,20 @@ export class PromiseQueueMap extends PromiseQueue {
         this.push(p);
     }
 
-    public clear(): void {
+    public group(groupName: string = PromiseQueueMap.DefaultGroup): Promise<any[]> {
+        const group = this.groups.get(groupName);
+        return group?.all ?? Promise.resolve([]);
+    }
+
+    public clearGroup(groupName: string = PromiseQueueMap.DefaultGroup): Promise<any[]> {
+        const group = this.groups.get(groupName);
+        return group?.clear() ?? Promise.resolve([]);
+    }
+
+    public clear(): Promise<any[]> {
+        const all = super.clear();
         this.groups.forEach(group => group.clear());
         this.groups.clear();
-        super.clear();
+        return all;
     }
 }

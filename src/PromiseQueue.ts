@@ -28,14 +28,10 @@ export class PromiseQueue {
         this.push(p);
     }
 
-    public clear(): void {
+    public clear(): Promise<any[]> {
+        const all = this.all;
         this.promises.length = 0;
         this._all = null;
-    }
-
-    public allClear(): Promise<any[]> {
-        const all = this.all;
-        this.clear();
         return all;
     }
 }
