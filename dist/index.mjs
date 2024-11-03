@@ -20,14 +20,12 @@ var PromiseQueue = class {
   add(promise) {
     const p = this.resolveLazy(promise);
     this.push(p);
+    return this;
   }
   clear() {
+    const all = this.all;
     this.promises.length = 0;
     this._all = null;
-  }
-  allClear() {
-    const all = this.all;
-    this.clear();
     return all;
   }
 };
@@ -49,11 +47,21 @@ var PromiseQueueMap = class _PromiseQueueMap extends PromiseQueue {
     const p = group.resolveLazy(promise);
     group.add(p);
     this.push(p);
+    return this;
+  }
+  group(groupName = _PromiseQueueMap.DefaultGroup) {
+    const group = this.groups.get(groupName);
+    return group?.all ?? Promise.resolve([]);
+  }
+  clearGroup(groupName = _PromiseQueueMap.DefaultGroup) {
+    const group = this.groups.get(groupName);
+    return group?.clear() ?? Promise.resolve([]);
   }
   clear() {
+    const all = super.clear();
     this.groups.forEach((group) => group.clear());
     this.groups.clear();
-    super.clear();
+    return all;
   }
 };
 export {
