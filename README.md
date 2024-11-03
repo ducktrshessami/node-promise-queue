@@ -1,2 +1,2 @@
-# node-promise-queue
+# promise-queue
 Break a word into syllables
