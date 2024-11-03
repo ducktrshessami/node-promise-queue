@@ -1,11 +1,7 @@
 // src/PromiseQueue.ts
 var PromiseQueue = class {
-  promises;
-  _all;
-  constructor() {
-    this.promises = [];
-    this._all = null;
-  }
+  promises = [];
+  _all = null;
   get all() {
     this._all ??= Promise.all(this.promises);
     return this._all;
@@ -31,9 +27,19 @@ var PromiseQueue = class {
 };
 
 // src/PromiseQueueMap.ts
-var PromiseQueueMap = class _PromiseQueueMap extends PromiseQueue {
+var PromiseQueueMap = class _PromiseQueueMap {
   static DefaultGroup = "default";
   groups = /* @__PURE__ */ new Map();
+  _all = null;
+  get all() {
+    if (this._all) {
+      return this._all;
+    }
+    const allPromises = [];
+    this.groups.forEach((group) => allPromises.push(...group.promises));
+    this._all = Promise.all(allPromises);
+    return this._all;
+  }
   ensureGroup(name) {
     let group = this.groups.get(name);
     if (!group) {
@@ -46,7 +52,7 @@ var PromiseQueueMap = class _PromiseQueueMap extends PromiseQueue {
     const group = this.ensureGroup(groupName);
     const p = group.resolveLazy(promise);
     group.add(p);
-    this.push(p);
+    this._all = null;
     return this;
   }
   group(groupName = _PromiseQueueMap.DefaultGroup) {
@@ -55,12 +61,14 @@ var PromiseQueueMap = class _PromiseQueueMap extends PromiseQueue {
   }
   clearGroup(groupName = _PromiseQueueMap.DefaultGroup) {
     const group = this.groups.get(groupName);
+    this._all = null;
     return group?.clear() ?? Promise.resolve([]);
   }
   clear() {
-    const all = super.clear();
+    const all = this.all;
     this.groups.forEach((group) => group.clear());
     this.groups.clear();
+    this._all = null;
     return all;
   }
 };
