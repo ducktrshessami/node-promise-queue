@@ -23,9 +23,10 @@ export class PromiseQueue {
         return typeof promise === "function" ? this.all.then(promise) : promise;
     }
 
-    public add(promise: PromiseOrLazy<any>): void {
+    public add(promise: PromiseOrLazy<any>): this {
         const p = this.resolveLazy(promise);
         this.push(p);
+        return this;
     }
 
     public clear(): Promise<any[]> {

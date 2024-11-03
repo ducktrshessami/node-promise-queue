@@ -15,11 +15,12 @@ export class PromiseQueueMap extends PromiseQueue {
         return group;
     }
 
-    public add(promise: PromiseOrLazy<any>, groupName: string = PromiseQueueMap.DefaultGroup): void {
+    public add(promise: PromiseOrLazy<any>, groupName: string = PromiseQueueMap.DefaultGroup): this {
         const group = this.ensureGroup(groupName);
         const p = group.resolveLazy(promise);
         group.add(p);
         this.push(p);
+        return this;
     }
 
     public group(groupName: string = PromiseQueueMap.DefaultGroup): Promise<any[]> {
