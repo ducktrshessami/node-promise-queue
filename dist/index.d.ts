@@ -10,6 +10,7 @@ declare class PromiseQueue {
     resolveLazy<T>(promise: PromiseOrLazy<T>): Promise<T>;
     add(promise: PromiseOrLazy<any>): void;
     clear(): void;
+    allClear(): Promise<any[]>;
 }
 
 declare class PromiseQueueMap extends PromiseQueue {

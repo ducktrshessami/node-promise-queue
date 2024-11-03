@@ -25,6 +25,11 @@ var PromiseQueue = class {
     this.promises.length = 0;
     this._all = null;
   }
+  allClear() {
+    const all = this.all;
+    this.clear();
+    return all;
+  }
 };
 
 // src/PromiseQueueMap.ts
