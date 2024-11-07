@@ -1,6 +1,6 @@
 # promise-queue
 
-Break a word into syllables
+Group-based Promise queueing
 
 ## Usage
 
