@@ -1,6 +1,6 @@
 {
   "name": "promise-queue",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Group-based Promise queueing",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
