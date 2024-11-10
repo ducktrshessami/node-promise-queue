@@ -25,8 +25,8 @@ describe("PromiseQueueMap", function () {
     it("should resolve multi-group lazy Promises after those grouped promises", async function () {
         const queue = new PromiseQueueMap();
         let a = 0;
-        let b: number;
-        let c: number;
+        let b = 0;
+        let c = 0;
         let resolve: () => void;
         queue
             .add(new Promise(res => resolve = () => {
@@ -43,7 +43,6 @@ describe("PromiseQueueMap", function () {
             }, ["default", "other"]);
         resolve!();
         await queue.all;
-        // @ts-expect-error
         assert.deepStrictEqual([a, b, c], [1, 2, 3]);
     });
 
