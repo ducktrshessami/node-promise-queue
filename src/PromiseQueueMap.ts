@@ -11,8 +11,8 @@ export class PromiseQueueMap {
         if (this._all) {
             return this._all;
         }
-        const allPromises: Promise<any>[] = [];
-        this.groups.forEach(group => allPromises.push(...group.promises));
+        const allPromises: Set<Promise<any>> = new Set();
+        this.groups.forEach(group => group.promises.forEach(promise => allPromises.add(promise)));
         this._all = Promise.all(allPromises);
         return this._all;
     }
