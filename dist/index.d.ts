@@ -15,9 +15,11 @@ declare class PromiseQueueMap {
     static readonly DefaultGroup = "default";
     private readonly groups;
     private _all;
+    protected static allPromises(groups: Iterable<PromiseQueue>): Set<Promise<any>>;
     get all(): Promise<any[]>;
     private ensureGroup;
-    add(promise: PromiseOrLazy<any>, groupName?: string): this;
+    static resolveLazy<T>(promise: PromiseOrLazy<T>, groups: Iterable<PromiseQueue>): Promise<T>;
+    add(promise: PromiseOrLazy<any>, groupNames?: string | string[]): this;
     group(groupName?: string): Promise<any[]>;
     clearGroup(groupName?: string): Promise<any[]>;
     clear(): Promise<any[]>;
