@@ -12,22 +12,22 @@ describe("PromiseQueue", function () {
 
     it("should resolve lazy Promises after stored Promises", async function () {
         const queue = new PromiseQueue();
+        let a = 0;
+        let b: number;
         let resolve: () => void;
         queue
             .add(new Promise(res => resolve = () => {
-                const t = Date.now();
-                setTimeout(() => res(t), 2);
+                a++;
+                setTimeout(() => res(a), 2);
             }))
-            .add(() => new Promise(res => {
-                const t = Date.now();
-                setTimeout(() => res(t), 2);
+            .add(new Promise(res => {
+                b = a + 2;
+                setTimeout(() => res(b), 2);
             }))
-            .add(() => Promise.resolve(Date.now()));
+            .add(() => Promise.resolve(a + b));
         resolve!();
         const results = await queue.all;
-        for (let i = 0; i < results.length - 1; i++) {
-            assert(results[i] < results[i + 1]);
-        }
+        assert.deepStrictEqual(results, [1, 2, 3]);
     });
 
     it("should return all Promises on clear", async function () {
