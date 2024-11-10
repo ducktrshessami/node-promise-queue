@@ -6,6 +6,7 @@ export class PromiseQueueMap {
 
     private readonly groups: Map<string, PromiseQueue> = new Map();
     private _all: Promise<any[]> | null = null;
+    private _allSettled: Promise<PromiseSettledResult<any>[]> | null = null;
 
     protected static allPromises(groups: Iterable<PromiseQueue>): Set<Promise<any>> {
         const allPromises: Set<Promise<any>> = new Set();
@@ -23,6 +24,14 @@ export class PromiseQueueMap {
         return this._all;
     }
 
+    public get allSettled(): Promise<PromiseSettledResult<any>[]> {
+        if (this._allSettled) {
+            return this._allSettled;
+        }
+        this._allSettled = Promise.allSettled(PromiseQueueMap.allPromises(this.groups.values()));
+        return this._allSettled;
+    }
+
     private ensureGroup(name: string): PromiseQueue {
         let group = this.groups.get(name);
         if (!group) {
@@ -30,6 +39,11 @@ export class PromiseQueueMap {
             this.groups.set(name, group);
         }
         return group;
+    }
+
+    protected cleanAll(): void {
+        this._all = null;
+        this._allSettled = null;
     }
 
     public static resolveLazy<T>(promise: PromiseOrLazy<T>, groups: Iterable<PromiseQueue>): Promise<T> {
@@ -41,7 +55,7 @@ export class PromiseQueueMap {
         const groups = names.map(name => this.ensureGroup(name));
         const p = PromiseQueueMap.resolveLazy(promise, groups);
         groups.forEach(group => group.add(p));
-        this._all = null;
+        this.cleanAll();
         return this;
     }
 
@@ -52,7 +66,7 @@ export class PromiseQueueMap {
 
     public clearGroup(groupName: string = PromiseQueueMap.DefaultGroup): Promise<any[]> {
         const group = this.groups.get(groupName);
-        this._all = null;
+        this.cleanAll();
         return group?.clear() ?? Promise.resolve([]);
     }
 
@@ -60,7 +74,7 @@ export class PromiseQueueMap {
         const all = this.all;
         this.groups.forEach(group => group.clear());
         this.groups.clear();
-        this._all = null;
+        this.cleanAll();
         return all;
     }
 }
