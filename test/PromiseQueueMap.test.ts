@@ -22,6 +22,26 @@ describe("PromiseQueueMap", function () {
         assert.deepStrictEqual(results2, [2, 4]);
     });
 
+    it("should resolve multi-group lazy Promises after those grouped promises", async function () {
+        const queue = new PromiseQueueMap();
+        let a = 0;
+        let b: number;
+        let resolve: () => void;
+        queue
+            .add(new Promise(res => resolve = () => {
+                a++;
+                setTimeout(() => res(a), 2);
+            }), "default")
+            .add(new Promise(res => {
+                b = a + 2;
+                setTimeout(() => res(b), 2);
+            }), "other")
+            .add(() => Promise.resolve(a + b), ["default", "other"]);
+        resolve!();
+        const results = await queue.all;
+        assert.deepStrictEqual(results, [1, 2, 3]);
+    });
+
     it("should properly clear groups", async function () {
         const queue = new PromiseQueueMap()
             .add(Promise.resolve(1), "default")
