@@ -8,11 +8,9 @@
   "author": "ducktrshessami",
   "license": "MIT",
   "scripts": {
-    "build:main": "tsup",
-    "build:test": "tsc --project tsconfig.test.json",
-    "build": "yarn build:main && yarn build:test",
+    "build": "tsup",
     "pretest": "yarn build",
-    "test": "mocha"
+    "test": "vitest"
   },
   "exports": {
     "types": "./dist/index.d.ts",
@@ -20,10 +18,9 @@
     "import": "./dist/index.mjs"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^24.10.1",
-    "mocha": "^11.7.5",
+    "@types/node": "^25.3.3",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
