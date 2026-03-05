@@ -1,4 +1,4 @@
-import assert from "assert";
+import { describe, expect, it } from "vitest";
 import { PromiseQueue } from "../";
 
 describe("PromiseQueue", function () {
@@ -7,7 +7,7 @@ describe("PromiseQueue", function () {
             .add(Promise.resolve(1))
             .add(Promise.resolve(2));
         const results = await queue.all;
-        assert.deepStrictEqual(results, [1, 2]);
+        expect(results).toStrictEqual([1, 2]);
     });
 
     it("should resolve lazy Promises after stored Promises", async function () {
@@ -27,7 +27,7 @@ describe("PromiseQueue", function () {
             .add(() => Promise.resolve(a + b));
         resolve!();
         const results = await queue.all;
-        assert.deepStrictEqual(results, [1, 2, 3]);
+        expect(results).toStrictEqual([1, 2, 3]);
     });
 
     it("should return all Promises on clear", async function () {
@@ -35,6 +35,6 @@ describe("PromiseQueue", function () {
             .add(Promise.resolve(1))
             .add(Promise.resolve(2));
         const results = await queue.clear();
-        assert.deepStrictEqual(results, [1, 2]);
+        expect(results).toStrictEqual([1, 2]);
     });
 });
